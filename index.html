@@ -1,17 +1,24 @@
 <html>
     <head>
+        <title>Leads Tracker</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
         <link rel="stylesheet" href="styles.css">
+
     </head>
     <body>
         <div>
-            <input id="input-el" type="text">
+            <label>Enter URL:</label>
+            <input id="input-el" type="text" placeholder="www.linkedin.com">
         </div>
         <div>
             <button id="saveinput-btn">SAVE INPUT</button>
-            <button id="savetab-btn">SAVE TAB</button>
             <button id="delete-btn">DELETE ALL</button>
             <ul id="ul-el"></ul>
         </div>
-        <script src="index.js"></script>
+        <script type="module" src="index.js"></script>
     </body>
 </html>

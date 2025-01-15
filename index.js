@@ -1,15 +1,18 @@
-let myLeads = []
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js"
+
+const firebaseConfig = {
+    databaseURL: "https://leads-tracker-app-8d865-default-rtdb.asia-southeast1.firebasedatabase.app/" // "https://leads-tracker-app-8d865-default-rtdb.asia-southeast1.firebasedatabase.app/" //process.env.DATABASE_URL
+}
+
+const app = initializeApp(firebaseConfig)
+const database = getDatabase(app)
+const referenceInDB = ref(database, "leads")
+
 const inputEl = document.getElementById("input-el")
 const inputBtn = document.getElementById("saveinput-btn")
-const saveBtn = document.getElementById("savetab-btn")
 const deleteBtn = document.getElementById("delete-btn")
 const ulEl = document.getElementById("ul-el")
-const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") )
-
-if (leadsFromLocalStorage) {
-    myLeads = leadsFromLocalStorage
-    render(myLeads)
-}
 
 function render(leads) {
     let listItems = ""
@@ -21,26 +24,23 @@ function render(leads) {
     }
     ulEl.innerHTML = listItems
 }
+// fetch data from the Firebase database
+onValue(referenceInDB, function(snapshot) {
+    const snapshotDoesExist = snapshot.exists()
+    if (snapshotDoesExist) {
+        const snapshotValues = snapshot.val()
+        const leads = Object.values(snapshotValues)
+        render(leads)
+    } 
+})
 
 inputBtn.addEventListener("click", function() {
-    myLeads.push(inputEl.value)
-    localStorage.setItem( "myLeads", JSON.stringify(myLeads) )
-    render(myLeads)
+    push(referenceInDB, inputEl.value)
     inputEl.value = ""
 })
 
-saveBtn.addEventListener("click", function() {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        myLeads.push(tabs[0].url)
-        localStorage.setItem("myLeads", JSON.stringify(myLeads) )
-        render(myLeads)
-      });
-})
-
 deleteBtn.addEventListener("dblclick", function() {
-    localStorage.clear()
-    myLeads = []
-    ulEl.value = ""
-    render(myLeads)
+    remove(referenceInDB)
+    ulEl.innerHTML = ""
 })
 
